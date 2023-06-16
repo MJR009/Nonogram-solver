@@ -1,5 +1,12 @@
 #include "common.hpp"
 
+#include "nonogram.hpp"
+
 int main() {
-    cout << "Hello world!" << endl;
+    try {
+        Nonogram nonogram("first");
+    } catch (const char* exc) {
+        cerr << exc << endl;
+        return 1;
+    }
 }

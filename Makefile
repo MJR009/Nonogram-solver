@@ -1,21 +1,23 @@
-.PHONY: clean
+.PHONY = clean
 
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Werror -Wpedantic -g
 
-HEADERS = $(wildcard src/*.hpp)
-SOURCES = $(wildcard src/*.cpp)
+SOURCE_DIR = src
+BUILD_DIR = build
+EXEC = main
 
-OUTPUT = main
+CPP = $(wildcard $(SOURCE_DIR)/*.cpp)
+HPP = $(wildcard $(SOURCE_DIR)/*.hpp)
 
-all: $(OUTPUT)
+all: $(BUILD_DIR)/$(EXEC)
 
-$(OUTPUT): $(HEADERS) $(SOURCES)
-	mkdir build
-	$(CXX) $(CXXFLAGS) $^ -o build/$@
+$(BUILD_DIR)/$(EXEC): $(CPP) $(HPP)
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $(CPP) -o $(BUILD_DIR)/$(EXEC)
 
-run: $(OUTPUT)
-	build/$(OUTPUT)
+run: $(BUILD_DIR)/$(EXEC)
+	$(BUILD_DIR)/$(EXEC)
 
 clean:
-	rm -rf build $(OUTPUT)
+	rm -rf $(BUILD_DIR)
