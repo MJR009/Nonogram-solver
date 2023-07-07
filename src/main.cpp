@@ -5,8 +5,8 @@
 int main() {
     try {
         Nonogram nonogram("first");
-    } catch (const char* exc) {
-        cerr << exc << endl;
+    } catch (const char* exception) {
+        cerr << "ERROR: " << exception << endl;
         return 1;
     }
 }

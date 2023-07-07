@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
+#include <cctype>
+#include <vector>
 using namespace std;
 
 #endif // _COMMON_HPP

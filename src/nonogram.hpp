@@ -3,13 +3,25 @@
 
 #include "common.hpp"
 
-#define MAX_SIZE 99
+enum class File_states {
+    INIT,
+    ROW_COUNT,
+    DIMENSIONS_SPACE,
+    COLLUMN_COUNT,
+    NEW_LINE,
+    STARTED_LINE,
+    NUMBER,
+    NUMBER_SPACE
+};
 
 class Nonogram {
-    int row_cnt, col_cnt;
+    int row_count, collumn_count;
+    vector<vector<int>> tmp;
 
 public:
-    Nonogram(string ngf_name); // nonogram file
+    Nonogram(string file_name);
+private:
+    
 };
 
 #endif // _NONOGRAM_HPP
