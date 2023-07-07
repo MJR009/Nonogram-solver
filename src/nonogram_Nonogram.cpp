@@ -13,15 +13,21 @@
  *  Everything has to abide by nonogram rules (i.e. if row count is 10, there can't be a collumn like "12" or "5 3 2")
  */
 
+// TODO:
+// maybe make nonogram_parser class? - probably easier
+// put the switch into functions
+// line variable is theoretically not needed
+// make the file closing on error better (too much of the same everywhere)
+
 Nonogram::Nonogram(string file_name) {
     ifstream file(file_name);
     if (!file.is_open()) {
         throw "Could not open given file";
     }
 
-    char current; // stores currently read character
-    string number; // functions as a buffer for the string representation of a number to later be converted
-    vector<int> line; // functions as a buffer for one row or collumn of numbers
+    char current;
+    string number; // buffer for the string representation of a number to later be converted
+    decltype(this->lines)::value_type line; // buffer for one row or collumn of numbers
     File_states state = File_states::INIT;
 
     while (file >> noskipws >> current) {
@@ -33,8 +39,8 @@ Nonogram::Nonogram(string file_name) {
                 } else if ((current == ' ') || (current == '\t')) {
                     // same state
                 } else {
-                    throw "Invalid row count";
                     file.close();
+                    throw "Invalid row count";
                 }
                 break;
 
@@ -47,8 +53,8 @@ Nonogram::Nonogram(string file_name) {
                     number.clear();
                     state = File_states::DIMENSIONS_SPACE;
                 } else {
-                    throw "Invalid row count";
                     file.close();
+                    throw "Invalid row count";
                 }
                 break;
 
@@ -59,8 +65,8 @@ Nonogram::Nonogram(string file_name) {
                 } else if ((current == ' ') || (current == '\t')) {
                     // same state
                 } else {
-                    throw "Invalid collumn count";
                     file.close();
+                    throw "Invalid collumn count";
                 }
                 break;
 
@@ -73,8 +79,8 @@ Nonogram::Nonogram(string file_name) {
                     number.clear();
                     state = File_states::NEW_LINE;
                 } else {
-                    throw "Invalid collumn count";
                     file.close();
+                    throw "Invalid collumn count";
                 }
                 break;
 
@@ -85,12 +91,12 @@ Nonogram::Nonogram(string file_name) {
                 } else if ((current == ' ') || (current == '\t')) {
                     state = File_states::STARTED_LINE;
                 } else if (current == '\n') {
-                    this->tmp.push_back(line);
+                    this->lines.push_back(line);
                     line.clear();
                     // same state
                 } else {
-                    throw "Invalid line beginning";
                     file.close();
+                    throw "Invalid line beginning";
                 }
                 break;
 
@@ -101,8 +107,8 @@ Nonogram::Nonogram(string file_name) {
                 } else if ((current == ' ') || (current == '\t')) {
                     // same state
                 } else {
-                    throw "Invalid number";
                     file.close();
+                    throw "Invalid number";
                 }
                 break;
 
@@ -117,12 +123,12 @@ Nonogram::Nonogram(string file_name) {
                 } else if (current == '\n') {
                     line.push_back(stoi(number));
                     number.clear();
-                    this->tmp.push_back(line);
+                    this->lines.push_back(line);
                     line.clear();
                     state = File_states::NEW_LINE;
                 } else {
-                    throw "Invalid number";
                     file.close();
+                    throw "Invalid number";
                 }
                 break;
 
@@ -133,19 +139,18 @@ Nonogram::Nonogram(string file_name) {
                 } else if ((current == ' ') || (current == '\t')) {
                     // same state
                 } else {
-                    throw "Invalid line number";
                     file.close();
+                    throw "Invalid line number";
                 }
                 break;
         }
     }
 
+    file.close();
+
     if (state != File_states::NEW_LINE) {
         throw "Unexpected EOF, not enough lines";
-        file.close();
     }
 
     // VALIDITY CHECK
-
-    file.close();
 }

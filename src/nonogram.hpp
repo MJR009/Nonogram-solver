@@ -16,7 +16,7 @@ enum class File_states {
 
 class Nonogram {
     int row_count, collumn_count;
-    vector<vector<int>> tmp;
+    vector<vector<int>> lines;
 
 public:
     Nonogram(string file_name);
