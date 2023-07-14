@@ -1,7 +1,7 @@
 .PHONY = clean
 
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Werror -Wpedantic -g
+CXXFLAGS = -std=c++20 -Wall -Wextra -Werror -Wpedantic -g
 
 SOURCE_DIR = src
 BUILD_DIR = build

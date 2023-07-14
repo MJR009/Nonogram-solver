@@ -14,11 +14,6 @@
  *  The file has to end with a newline character as is standard
  */
 
-// Ideas:
-// there are library functions for sums
-// try using iterators
-// prepare the grid better than with 2 cycles
-
 void Nonogram::Parse_character(char current, File_states &state) {
     static int line_count = 0;
 
@@ -81,11 +76,7 @@ void Nonogram::Parse_character(char current, File_states &state) {
             } else if ((current == ' ') || (current == '\t')) {
                 state = File_states::STARTED_LINE;
             } else if (current == '\n') {
-                if (line_count < this->row_count) {
-                    this->rows.push_back(line);
-                } else {
-                    this->collumns.push_back(line);
-                }
+                line_count < this->row_count ? this->rows.push_back(line) : this->collumns.push_back(line);
                 line.clear();
                 line_count++;
                 // same state
@@ -116,11 +107,7 @@ void Nonogram::Parse_character(char current, File_states &state) {
             } else if (current == '\n') {
                 line.push_back(stoi(number));
                 number.clear();
-                if (line_count < this->row_count) {
-                    this->rows.push_back(line);
-                } else {
-                    this->collumns.push_back(line);
-                }
+                line_count < this->row_count ? this->rows.push_back(line) : this->collumns.push_back(line);
                 line.clear();
                 line_count++;
                 state = File_states::NEW_LINE;
@@ -162,32 +149,46 @@ Nonogram::Nonogram(string file_name) {
 
     file.close();
 
-    if ((this->row_count != static_cast<int>(this->rows.size())) ||
-        (this->collumn_count != static_cast<int>(this->collumns.size()))) {
-        throw "Incorrect amount of lines";
-    }
-
-    // VALIDITY CHECK
-    // FILL GRID
-
-    // DEBUG
-    /*
     if (state != File_states::NEW_LINE) {
         throw "Unexpected EOF";
     }
 
+    int line_difference = (this->row_count + this->collumn_count) - (this->rows.size() + this->collumns.size());
+    if (line_difference < 0) {
+        throw "Too many lines";
+    }
+    if (line_difference > 0) {
+        throw "Not enough lines";
+    }
+
     for (auto row : this->rows) {
-        for (auto number : row) {
-            cout << number << " ";
+        int min_lenght = accumulate(row.begin(), row.end(), row.size() - 1); // initial value is minimal space count
+        if (min_lenght > this->collumn_count) {
+            throw "Invalid row";
         }
-        cout << endl;
     }
-    cout << endl;
     for (auto collumn : this->collumns) {
-        for (auto number : collumn) {
-            cout << number << " ";
+        int min_lenght = accumulate(collumn.begin(), collumn.end(), collumn.size() - 1);
+        if (min_lenght > this->row_count) {
+            throw "Invalid collumn";
+        }
+    }
+    // if there is an empty line, -1 is returned, which doesn't matter, empty lines always fit
+
+    for (int i = 0; i < this->row_count; i++) {
+        this->grid.emplace_back(this->collumn_count);
+    }
+    // inicialised to Tiles::EMPTY by default
+    //generate_n(back_inserter(this->grid), this->row_count, [&]() {
+    //    return decltype(this->grid)::value_type(this->collumn_count);
+    //});
+
+    for (auto row : this->grid) {
+        for (auto tile : row) {
+            if (tile == Tiles::EMPTY) {
+                cout << "X";
+            }
         }
         cout << endl;
     }
-    */
 }
